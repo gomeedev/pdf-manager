@@ -10,6 +10,8 @@ def get_supabase_client(token: str = None) -> Client:
     if token:
         options = ClientOptions(headers={"Authorization": f"Bearer {token}"})
         client = create_client(settings.supabase_url, settings.supabase_anon_key, options=options)
+        # Required to correctly pass the JWT context to PostgreSQL via Postgrest
+        client.postgrest.auth(token)
     else:
         client = create_client(settings.supabase_url, settings.supabase_anon_key)
         
