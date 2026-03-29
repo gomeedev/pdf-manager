@@ -5,6 +5,7 @@ from core.ports.auth import AuthUser
 from di.container import get_db_port
 from core.ports.database import DatabasePort
 from adapters.inbound.pdf_routes import router as pdf_router
+from adapters.inbound.agent_routes import router as agent_router
 
 app = FastAPI(
     title="PDF Manager API",
@@ -13,6 +14,7 @@ app = FastAPI(
 )
 
 app.include_router(pdf_router)
+app.include_router(agent_router)
 
 @app.get("/health")
 def health_check():
