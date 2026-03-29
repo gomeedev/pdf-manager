@@ -4,12 +4,15 @@ from core.security import require_auth
 from core.ports.auth import AuthUser
 from di.container import get_db_port
 from core.ports.database import DatabasePort
+from adapters.inbound.pdf_routes import router as pdf_router
 
 app = FastAPI(
     title="PDF Manager API",
     description="API for managing PDFs powered by an AI Agent",
     version="1.0.0"
 )
+
+app.include_router(pdf_router)
 
 @app.get("/health")
 def health_check():
