@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
 from pydantic import BaseModel
 from typing import List
 import uuid
@@ -77,6 +77,26 @@ def compress(
 ):
     try:
         new_pdf = pdf_service.process_compress(user.id, request.file_id, request.output_filename)
+        return {"status": "success", "data": new_pdf}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@router.post("/upload")
+async def upload_pdf(
+    file: UploadFile = File(...),
+    user: AuthUser = Depends(require_auth),
+    pdf_service: PDFService = Depends(get_pdf_service)
+):
+    """
+    Uploads a raw PDF file into the user's Supabase bucket
+    and registers it in the pdf_files table for future processing.
+    """
+    try:
+        if not file.filename.lower().endswith(".pdf"):
+            raise HTTPException(status_code=400, detail="Only PDF files are allowed")
+            
+        file_bytes = await file.read()
+        new_pdf = pdf_service._save_result(file_bytes, user.id, file.filename)
         return {"status": "success", "data": new_pdf}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))

@@ -1,16 +1,20 @@
-from supabase import create_client, Client
+from supabase import create_client, Client, ClientOptions
 from core.config import settings
 
 def get_supabase_client(token: str = None) -> Client:
     """
     Returns a Supabase client.
     If a token is provided, the client is initialized with the user's JWT
-    to enforce Row Level Security (RLS) on the database side.
+    to enforce Row Level Security (RLS) on both the database and storage side.
     """
-    client = create_client(settings.supabase_url, settings.supabase_anon_key)
     if token:
-        # We can dynamically pass the jwt securely to impersonate the user for RLS
+        options = ClientOptions(headers={"Authorization": f"Bearer {token}"})
+        client = create_client(settings.supabase_url, settings.supabase_anon_key, options=options)
+        # Required to correctly pass the JWT context to PostgreSQL via Postgrest
         client.postgrest.auth(token)
+    else:
+        client = create_client(settings.supabase_url, settings.supabase_anon_key)
+        
     return client
 
 def get_service_client() -> Client:
