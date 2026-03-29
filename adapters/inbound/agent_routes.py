@@ -57,5 +57,5 @@ def chat_with_agent(
         
     return {
         "reply": reply,
-        "history": request.message_history # Fast return original or partial
+        "history": serializable_history
     }
