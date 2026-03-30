@@ -39,3 +39,8 @@ class SupabaseDatabaseAdapter(DatabasePort):
             data["result_path"] = result_path
         response = self.client.table("operations").update(data).eq("id", str(operation_id)).execute()
         return response.data[0]
+
+    def delete_pdf_file(self, user_id: UUID, pdf_file_id: UUID) -> bool:
+        self.client.table("operations").delete().eq("pdf_file_id", str(pdf_file_id)).execute()
+        response = self.client.table("pdf_files").delete().eq("id", str(pdf_file_id)).eq("user_id", str(user_id)).execute()
+        return len(response.data) > 0
