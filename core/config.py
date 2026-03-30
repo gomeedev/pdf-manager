@@ -6,6 +6,7 @@ class Settings(BaseSettings):
     supabase_anon_key: str
     supabase_service_key: str
     storage_bucket: str = "pdf-files"
+    cors_origins: str = "http://localhost:5173,http://127.0.0.1:5173"
 
     # Groq LLM
     groq_api_key: str

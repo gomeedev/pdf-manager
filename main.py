@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Depends
+from fastapi.middleware.cors import CORSMiddleware
 from core.config import settings
 from core.security import require_auth
 from core.ports.auth import AuthUser
@@ -11,6 +12,14 @@ app = FastAPI(
     title="PDF Manager API",
     description="API for managing PDFs powered by an AI Agent",
     version="1.0.0"
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[origin.strip() for origin in settings.cors_origins.split(",")],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 app.include_router(pdf_router)
