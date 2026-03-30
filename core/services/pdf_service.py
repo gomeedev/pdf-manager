@@ -22,10 +22,11 @@ class PDFService:
         return files_data
 
     def _save_result(self, result_bytes: bytes, user_id: uuid.UUID, filename: str) -> dict:
-        unique_path = f"{user_id}/{uuid.uuid4()}_{filename}"
+        unique_path = f"{user_id}/{uuid.uuid4()}.pdf"
         self.storage.upload_file(unique_path, result_bytes, "application/pdf")
         
-        new_pdf = self.db.create_pdf_file(user_id=user_id, filename=filename, storage_path=unique_path)
+        file_size = len(result_bytes)
+        new_pdf = self.db.create_pdf_file(user_id=user_id, filename=filename, storage_path=unique_path, size_bytes=file_size)
         return new_pdf
 
     def process_merge(self, user_id: uuid.UUID, file_ids: List[uuid.UUID], output_filename: str) -> dict:

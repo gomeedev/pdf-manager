@@ -11,11 +11,12 @@ class SupabaseDatabaseAdapter(DatabasePort):
         response = self.client.table("pdf_files").select("*").eq("id", str(file_id)).execute()
         return response.data[0] if response.data else None
 
-    def create_pdf_file(self, user_id: UUID, filename: str, storage_path: str) -> Dict[str, Any]:
+    def create_pdf_file(self, user_id: UUID, filename: str, storage_path: str, size_bytes: int) -> Dict[str, Any]:
         data = {
             "user_id": str(user_id),
             "filename": filename,
-            "storage_path": storage_path
+            "storage_path": storage_path,
+            "size_bytes": size_bytes
         }
         response = self.client.table("pdf_files").insert(data).execute()
         return response.data[0]
