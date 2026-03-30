@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 from pydantic import BaseModel
 from typing import List, Dict, Any
 from uuid import UUID
@@ -10,6 +10,7 @@ from core.ports.database import DatabasePort
 from core.ports.storage import StoragePort
 from core.services.pdf_service import PDFService
 from agent.react_agent import PDFAgent
+from core.limiter import limiter
 
 router = APIRouter(prefix="/api/v1/agent", tags=["AI Agent"])
 
@@ -24,16 +25,23 @@ class ChatRequest(BaseModel):
     message: str
     message_history: List[Dict[str, Any]] = []
 
-@router.post("/chat")
+@router.post(
+    "/chat",
+    summary="Chat with AI Agent",
+    description="Conversational endpoint for the ReAct Agent. It accepts a message and message_history and operates on the user's PDFs.",
+    response_model=dict
+)
+@limiter.limit("20/minute")
 def chat_with_agent(
-    request: ChatRequest,
+    request: Request,
+    chat_request: ChatRequest,
     user: AuthUser = Depends(require_auth),
     agent: PDFAgent = Depends(get_pdf_agent)
 ):
     reply, history = agent.chat(
         user_id=user.id,
-        message=request.message,
-        message_history=request.message_history
+        message=chat_request.message,
+        message_history=chat_request.message_history
     )
     
     # Optional: we strip tool contents from history before sending to client if we want,

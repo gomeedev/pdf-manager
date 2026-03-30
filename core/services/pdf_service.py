@@ -55,3 +55,16 @@ class PDFService:
         new_pdf = self._save_result(result_bytes, user_id, output_filename)
         self.db.create_operation(pdf_file_id=uuid.UUID(new_pdf["id"]), op_type="compress")
         return new_pdf
+
+    def delete_pdf(self, user_id: uuid.UUID, file_id: uuid.UUID) -> bool:
+        pdf_record = self.db.get_pdf_file(file_id)
+        if not pdf_record or str(pdf_record["user_id"]) != str(user_id):
+            raise ValueError(f"PDF file {file_id} not found or access denied")
+        storage_path = pdf_record["storage_path"]
+        db_deleted = self.db.delete_pdf_file(user_id, file_id)
+        if db_deleted:
+            try:
+                self.storage.delete_file(storage_path)
+            except Exception as e:
+                pass
+        return db_deleted

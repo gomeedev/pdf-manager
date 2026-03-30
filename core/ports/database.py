@@ -16,3 +16,6 @@ class DatabasePort(Protocol):
         
     def update_operation_status(self, operation_id: UUID, status: str, result_path: Optional[str] = None) -> Dict[str, Any]:
         ...
+
+    def delete_pdf_file(self, user_id: UUID, pdf_file_id: UUID) -> bool:
+        ...

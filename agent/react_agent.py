@@ -96,6 +96,20 @@ class PDFAgent:
                         "required": ["file_id", "output_filename"]
                     }
                 }
+            },
+            {
+                "type": "function",
+                "function": {
+                    "name": "delete_pdf",
+                    "description": "Deletes a specific PDF file from the user's storage and database.",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "file_id": {"type": "string", "description": "UUID of the PDF file to delete."}
+                        },
+                        "required": ["file_id"]
+                    }
+                }
             }
         ]
 
@@ -119,6 +133,13 @@ class PDFAgent:
                 file_id = UUID(arguments["file_id"])
                 new_pdf = self.pdf_service.process_compress(user_id, file_id, arguments["output_filename"])
                 return f"Compressed successfully. New PDF ID: {new_pdf['id']}"
+            elif tool_name == "delete_pdf":
+                file_id = UUID(arguments["file_id"])
+                success = self.pdf_service.delete_pdf(user_id, file_id)
+                if success:
+                    return f"Deleted successfully. PDF ID: {file_id}"
+                else:
+                    return f"Failed to delete PDF ID: {file_id}"
             else:
                 return f"Tool {tool_name} not recognized."
         except Exception as e:
