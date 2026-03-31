@@ -5,7 +5,7 @@ class DatabasePort(Protocol):
     def get_pdf_file(self, file_id: UUID) -> Optional[Dict[str, Any]]:
         ...
         
-    def create_pdf_file(self, user_id: UUID, filename: str, storage_path: str) -> Dict[str, Any]:
+    def create_pdf_file(self, user_id: UUID, filename: str, storage_path: str, size_bytes: int) -> Dict[str, Any]:
         ...
 
     def get_user_pdf_files(self, user_id: UUID) -> List[Dict[str, Any]]:
