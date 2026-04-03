@@ -1,5 +1,12 @@
 # PDF Manager
 
+<div align="left">
+  <a href="https://www.python.org/"><img src="https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white" alt="Python" /></a>
+  <a href="https://fastapi.tiangolo.com/"><img src="https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white" alt="FastAPI" /></a>
+  <a href="https://supabase.com/"><img src="https://img.shields.io/badge/Supabase-%23000000.svg?logo=supabase&logoColor=3ECF8E" alt="Supabase" /></a>
+  <a href="https://groq.com/"><img src="https://img.shields.io/badge/Groq-f55036?logo=groq&logoColor=white" alt="Groq" /></a>
+</div>
+
 ## Descripción del Proyecto
 Aplicación web SaaS para gestión inteligente de PDFs. El diferenciador central es un **Agente de IA (ReAct)** que opera sobre los PDFs mediante lenguaje natural, permitiendo a los usuarios evitar la navegación manual por menús al simplemente describir la acción que necesitan (por ejemplo: "Extrae las páginas 1 y 20 y comprímelas").
 
@@ -36,9 +43,9 @@ El Agente de Inteligencia Artificial usa el modelo ReAct ("Reasoning and Acting"
 2. **Configurar el entorno:**
    Copia el archivo `.env.example` o crea un archivo `.env` en el directorio raíz. Debes proporcionar un `SUPABASE_URL`, tus claves de `SUPABASE_ANON` y `SERVICE`, tu `GROQ_API_KEY`.
 3. **Levantar el servicio:**
-   Puedes iniciar el servidor a través del compilador uvicorn:
+   Puedes iniciar el servidor a través del script de desarrollo local con uv:
    ```bash
-   uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+   uv run dev.py
    ```
 
 ## Endpoints Disponibles
